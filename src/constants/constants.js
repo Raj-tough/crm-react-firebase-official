@@ -1,0 +1,10 @@
+export const STORE_PRODUCTS = "STORE_PRODUCTS";
+export const ADD = "ADD";
+export const REMOVE = "REMOVE";
+export const CLOSE_POPUP = "CLOSE_POPUP";
+export const EDIT = "EDIT";
+export const DELETE = "DELETE";
+export const CLOSE_ADD_EDIT_POPUP = "CLOSE_ADD_EDIT_POPUP";
+export const CLOSE_DELETE_POPUP = "CLOSE_DELETE_POPUP";
+export const CLEAN_PRODUCT_LIST = "CLEAN_PRODUCT_LIST"
+export const STORE_CUSTOMERS = "STORE_CUSTOMERS"
