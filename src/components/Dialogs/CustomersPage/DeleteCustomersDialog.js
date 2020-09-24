@@ -33,7 +33,7 @@ const DeleteCustomersDialog = (props) => {
         <DialogTitle id="responsive-dialog-title">{"Confirm Delete ?"}</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            Are you sure want to delete {props.selectedRowData.length} customers !?
+            Are you sure want to delete { props.selectedRowData && props.selectedRowData.length ? props.selectedRowData.length : ''} customers !?
           </DialogContentText>
         </DialogContent>
         <DialogActions>

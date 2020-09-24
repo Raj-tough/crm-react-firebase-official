@@ -18,14 +18,14 @@ export const addCustomer = (userId, customer, resolve) => {
 export const getCustomers = (userId) => dispatch => {
     fireDb.ref('customers/' + userId).on('value', (data) => {
         let firstCustomer = []
-        console.log(data.val())
-        console.log(data.val().length)
+        // console.log(data.val())
+        // console.log(data.val().length)
         if (data.val() && data.val().length === undefined) {
             firstCustomer.push(data.val())
-            console.log(firstCustomer)
+            // console.log(firstCustomer)
             dispatch(storeCustomersToState(firstCustomer))
         } else {
-            console.log('nothing')
+            // console.log('nothing')
             dispatch(storeCustomersToState(data.val()))
         }
         

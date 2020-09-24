@@ -5,6 +5,14 @@ import {connect} from "react-redux"
 import { Delete } from "@material-ui/icons";
 import DeleteCustomersDialog from "../Dialogs/CustomersPage/DeleteCustomersDialog"
 import {addCustomer} from "../../services/CustomersService"
+import TextField from '@material-ui/core/TextField';
+// import IconButton from '@material-ui/core/IconButton';
+// import LocationOnIcon from '@material-ui/icons/LocationOn';
+import PhoneInput from 'react-phone-input-2'
+import 'react-phone-input-2/lib/style.css'
+
+let newCustomerPhno = ''
+let newCustomerAddress = ''
 
 const useRowStyles = makeStyles({
   // table : {
@@ -12,6 +20,10 @@ const useRowStyles = makeStyles({
   //   // maxHeight: 500,
   //   height : 460
   // }
+  MapIconAddressBar : {
+    display : 'flex',
+    flexDirection : 'row'
+  }
 });
 
 const CustomersTable = (props) => {
@@ -20,22 +32,58 @@ const CustomersTable = (props) => {
     let [ showDeleteCustomersDialog, setShowDeleteCustomersDialog] = useState(false)
     let [selectedRowData, setSelectedRowData] = useState([])
     let [customersData, setCustomersData] = useState([])
+    
+    const handleChange = (event) => {
+      console.log(event)
+    }
+    const onHandleOpenMapDialog = () => {
+      console.log('open map dialog')
+    }
+
+    const onHandleUpdateNewCustomerAddress = (event) => {
+      console.log(event.target.value)
+      newCustomerAddress = event.target.value
+    }
+    const onHandleUpdateNewCustomerPhno = (event) => {
+      console.log(event.target.value)
+      newCustomerPhno = event.target.value
+    }
+
     const [columns, setColumns] = useState([
-      { title: 'Name', field: 'name' },
-      { title: 'DOB', field: 'dob', initialEditValue: '' },
-      { title: 'Phone number', field: 'phno', initialEditValue: '' },
-      { title: 'Address', field: 'address' },
+      { title: 'Name', field: 'name', cellStyle : {maxWidth : 150} },
+      { title: 'DOB', field: 'dob', type : 'date', cellStyle : {maxWidth : 40}},
+      { title: 'Phone number', field: 'phno',
+        editComponent : props => (
+          <PhoneInput
+            country={'in'}
+            preferredCountries = {['in', 'us']}
+            placeholder	={''}
+            // containerStyle = {{width : 40}}
+            onBlur={ onHandleUpdateNewCustomerPhno}
+          />
+        )
+      },
+      { title: 'Address', field: 'address',
+        editComponent: props => (
+          <div className = {classes.MapIconAddressBar}>
+            <TextField required id="standard-required"  onBlur = {onHandleUpdateNewCustomerAddress} value = {props.address}/>
+            {/* <IconButton color="primary" aria-label="upload picture" component="span" onClick = {onHandleOpenMapDialog}>
+              <LocationOnIcon />
+            </IconButton> */}
+          </div>
+        )
+      },
       {
         title: 'Proof',
         field: 'proof',
-        lookup: { 1: 'Voter ID', 2: 'Driving license', 3: 'Smart card', 4 : 'Aadhar card' },
+        lookup: { 0: 'Voter ID', 1: 'Driving license', 2: 'Smart card', 3 : 'Aadhar card' },
       },
       {
         title: 'Id Number',
         field: 'idNumber',
       },
     ]);
-  
+    // const proofTitle = ['Voter ID', 'Driving license', 'Smart card', 'Aadhar card' ]
     const [data, setData] = useState([
       { name: 'Madasami', phno: '8879864554', address: '23, mela masi street, kvp', proof: 1 },
       { name: 'Sankar', phno: '7868768309', address: '1, north st., kvp', proof: 2 },
@@ -68,24 +116,37 @@ const CustomersTable = (props) => {
       if (customers) {
         setCustomersData(customers)
       }
-    })
+    }, [customers])
 
     const handleAddCustomer = (customer, resolve) => {
       console.log(customer)
-      console.log('triggering')
+      let dob = customer.dob ? customer.dob : ""
+      if (dob) {
+        const month = dob.getMonth()+1 >=10 ? dob.getMonth()+1 : `0${dob.getMonth()+1}`
+        const date = dob.getDate() >=10 ? dob.getDate() : `0${dob.getDate()}`
+        const formattedDob = `${dob.getFullYear()}-${month}-${date}`
+        customer.dob = formattedDob
+      }
+      customer = {...customer, phno : newCustomerPhno, address : newCustomerAddress}
+      console.log(customer)
       if (!customers) {
-        console.log('1st customer')
         addCustomer(user.uid, customer, resolve)
       } else {
-        console.log('next customers')
-        console.log(customers)
-        customers.push(customers)
+        customers.push(customer)
         addCustomer(user.uid, customers, resolve)
       }
+    }
     
+    const handleEditCustomer = (oldCustomer, editedCustomer, resolve) => {
+      console.log('old Customer', oldCustomer)
+      editedCustomer.phno = newCustomerPhno
+      editedCustomer.address = newCustomerAddress
+      console.log('new customer', editedCustomer)
+      console.log(customers)
+      
+
     }
 
-    
     const handleDeleteRows = (event, rowData) => {
       setSelectedRowData(rowData)
       setShowDeleteCustomersDialog(true)
@@ -114,18 +175,12 @@ const CustomersTable = (props) => {
         data={customersData}
         editable={{
           onRowAdd: (newData) =>
-          new Promise((resolve) => {
-            handleAddCustomer(newData, resolve)
-          }),
+            new Promise((resolve) => {
+              handleAddCustomer(newData, resolve)
+            }),
           onRowUpdate: (newData, oldData) =>
-            new Promise((resolve, reject) => {
-              setTimeout(() => {
-                const dataUpdate = [...data];
-                const index = oldData.tableData.id;
-                dataUpdate[index] = newData;
-                setData([...dataUpdate]);
-                resolve();
-              }, 1000)
+            new Promise((resolve) => {
+              handleEditCustomer(oldData, newData, resolve)
             }),
           onRowDelete: oldData =>
             new Promise((resolve, reject) => {

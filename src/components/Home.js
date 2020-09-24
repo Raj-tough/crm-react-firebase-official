@@ -10,6 +10,7 @@ const Home = (props) =>  {
   const { user } = props
 
   useEffect( () => {
+    // window.navigator.onLine ? console.log("online") : console.log("offline")
     if (user && user.uid) {
       dispatch(getAndUpdateProductListDataToState(user.uid))
       dispatch(getCustomers(user.uid))
