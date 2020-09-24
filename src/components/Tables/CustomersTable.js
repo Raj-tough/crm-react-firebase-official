@@ -1,10 +1,10 @@
-import React, {useEffect} from 'react'
-import MaterialTable from 'material-table'
-import { makeStyles } from '@material-ui/core/styles';
-import {connect} from "react-redux"
+import React, { useEffect } from "react";
+import MaterialTable from "material-table";
+import { makeStyles } from "@material-ui/core/styles";
+import { connect } from "react-redux";
 import { Delete } from "@material-ui/icons";
-import DeleteCustomersDialog from "../Dialogs/CustomersPage/DeleteCustomersDialog"
-import {addCustomer} from "../../services/CustomersService"
+import DeleteCustomersDialog from "../Dialogs/CustomersPage/DeleteCustomersDialog";
+import { addCustomer } from "../../services/CustomersService";
 
 const useRowStyles = makeStyles({
   // table : {
@@ -15,108 +15,227 @@ const useRowStyles = makeStyles({
 });
 
 const CustomersTable = (props) => {
-    const { useState } = React;
-    const classes = useRowStyles();
-    let [ showDeleteCustomersDialog, setShowDeleteCustomersDialog] = useState(false)
-    let [selectedRowData, setSelectedRowData] = useState([])
-    let [customersData, setCustomersData] = useState([])
-    const [columns, setColumns] = useState([
-      { title: 'Name', field: 'name' },
-      { title: 'DOB', field: 'dob', initialEditValue: '' },
-      { title: 'Phone number', field: 'phno', initialEditValue: '' },
-      { title: 'Address', field: 'address' },
-      {
-        title: 'Proof',
-        field: 'proof',
-        lookup: { 1: 'Voter ID', 2: 'Driving license', 3: 'Smart card', 4 : 'Aadhar card' },
+  const { useState } = React;
+  const classes = useRowStyles();
+  let [showDeleteCustomersDialog, setShowDeleteCustomersDialog] = useState(
+    false
+  );
+  let [selectedRowData, setSelectedRowData] = useState([]);
+  let [customersData, setCustomersData] = useState([]);
+  const [columns, setColumns] = useState([
+    { title: "Name", field: "name" },
+    { title: "DOB", field: "dob", initialEditValue: "" },
+    { title: "Phone number", field: "phno", initialEditValue: "" },
+    { title: "Address", field: "address" },
+    {
+      title: "Proof",
+      field: "proof",
+      lookup: {
+        1: "Voter ID",
+        2: "Driving license",
+        3: "Smart card",
+        4: "Aadhar card",
       },
-      {
-        title: 'Id Number',
-        field: 'idNumber',
-      },
-    ]);
-  
-    const [data, setData] = useState([
-      { name: 'Madasami', phno: '8879864554', address: '23, mela masi street, kvp', proof: 1 },
-      { name: 'Sankar', phno: '7868768309', address: '1, north st., kvp', proof: 2 },
-      { name: 'Madasami', phno: '8879864554', address: '23, mela masi street, kvp', proof: 1 },
-      { name: 'Sankar', phno: '7868768309', address: '1, north st., kvp', proof: 2 },
-      { name: 'Madasami', phno: '8879864554', address: '23, mela masi street, kvp', proof: 1 },
-      { name: 'Sankar', phno: '7868768309', address: '1, north st., kvp', proof: 2 },
-      { name: 'Madasami', phno: '8879864554', address: '23, mela masi street, kvp', proof: 1 },
-      { name: 'Sankar', phno: '7868768309', address: '1, north st., kvp', proof: 2 },
-      { name: 'Madasami', phno: '8879864554', address: '23, mela masi street, kvp', proof: 1 },
-      { name: 'Sankar', phno: '7868768309', address: '1, north st., kvp', proof: 2 },
-      { name: 'Madasami', phno: '8879864554', address: '23, mela masi street, kvp', proof: 1 },
-      { name: 'Sankar', phno: '7868768309', address: '1, north st., kvp', proof: 2 },
-      { name: 'Madasami', phno: '8879864554', address: '23, mela masi street, kvp', proof: 1 },
-      { name: 'Sankar', phno: '7868768309', address: '1, north st., kvp', proof: 2 },
-      { name: 'Madasami', phno: '8879864554', address: '23, mela masi street, kvp', proof: 1 },
-      { name: 'Sankar', phno: '7868768309', address: '1, north st., kvp', proof: 2 },
-      { name: 'Madasami', phno: '8879864554', address: '23, mela masi street, kvp', proof: 1 },
-      { name: 'Sankar', phno: '7868768309', address: '1, north st., kvp', proof: 2 },
-      { name: 'Madasami', phno: '8879864554', address: '23, mela masi street, kvp', proof: 1 },
-      { name: 'Sankar', phno: '7868768309', address: '1, north st., kvp', proof: 2 },
-      { name: 'Madasami', phno: '8879864554', address: '23, mela masi street, kvp', proof: 1 },
-      { name: 'Sankar', phno: '7868768309', address: '1, north st., kvp', proof: 2 },
-    ]);
+    },
+    {
+      title: "Id Number",
+      field: "idNumber",
+    },
+  ]);
 
-    const { user, customers }= props
+  const [data, setData] = useState([
+    {
+      name: "Madasami",
+      phno: "8879864554",
+      address: "23, mela masi street, kvp",
+      proof: 1,
+    },
+    {
+      name: "Sankar",
+      phno: "7868768309",
+      address: "1, north st., kvp",
+      proof: 2,
+    },
+    {
+      name: "Madasami",
+      phno: "8879864554",
+      address: "23, mela masi street, kvp",
+      proof: 1,
+    },
+    {
+      name: "Sankar",
+      phno: "7868768309",
+      address: "1, north st., kvp",
+      proof: 2,
+    },
+    {
+      name: "Madasami",
+      phno: "8879864554",
+      address: "23, mela masi street, kvp",
+      proof: 1,
+    },
+    {
+      name: "Sankar",
+      phno: "7868768309",
+      address: "1, north st., kvp",
+      proof: 2,
+    },
+    {
+      name: "Madasami",
+      phno: "8879864554",
+      address: "23, mela masi street, kvp",
+      proof: 1,
+    },
+    {
+      name: "Sankar",
+      phno: "7868768309",
+      address: "1, north st., kvp",
+      proof: 2,
+    },
+    {
+      name: "Madasami",
+      phno: "8879864554",
+      address: "23, mela masi street, kvp",
+      proof: 1,
+    },
+    {
+      name: "Sankar",
+      phno: "7868768309",
+      address: "1, north st., kvp",
+      proof: 2,
+    },
+    {
+      name: "Madasami",
+      phno: "8879864554",
+      address: "23, mela masi street, kvp",
+      proof: 1,
+    },
+    {
+      name: "Sankar",
+      phno: "7868768309",
+      address: "1, north st., kvp",
+      proof: 2,
+    },
+    {
+      name: "Madasami",
+      phno: "8879864554",
+      address: "23, mela masi street, kvp",
+      proof: 1,
+    },
+    {
+      name: "Sankar",
+      phno: "7868768309",
+      address: "1, north st., kvp",
+      proof: 2,
+    },
+    {
+      name: "Madasami",
+      phno: "8879864554",
+      address: "23, mela masi street, kvp",
+      proof: 1,
+    },
+    {
+      name: "Sankar",
+      phno: "7868768309",
+      address: "1, north st., kvp",
+      proof: 2,
+    },
+    {
+      name: "Madasami",
+      phno: "8879864554",
+      address: "23, mela masi street, kvp",
+      proof: 1,
+    },
+    {
+      name: "Sankar",
+      phno: "7868768309",
+      address: "1, north st., kvp",
+      proof: 2,
+    },
+    {
+      name: "Madasami",
+      phno: "8879864554",
+      address: "23, mela masi street, kvp",
+      proof: 1,
+    },
+    {
+      name: "Sankar",
+      phno: "7868768309",
+      address: "1, north st., kvp",
+      proof: 2,
+    },
+    {
+      name: "Madasami",
+      phno: "8879864554",
+      address: "23, mela masi street, kvp",
+      proof: 1,
+    },
+    {
+      name: "Sankar",
+      phno: "7868768309",
+      address: "1, north st., kvp",
+      proof: 2,
+    },
+  ]);
 
-    useEffect(() => {
-      console.log(customers)
-      if (customers) {
-        setCustomersData(customers)
-      }
-    })
+  const { user, customers } = props;
 
-    const handleAddCustomer = (customer, resolve) => {
-      console.log(customer)
-      console.log('triggering')
-      if (!customers) {
-        console.log('1st customer')
-        addCustomer(user.uid, customer, resolve)
-      } else {
-        console.log('next customers')
-        console.log(customers)
-        customers.push(customers)
-        addCustomer(user.uid, customers, resolve)
-      }
-    
+  useEffect(() => {
+    console.log(customers);
+    if (customers) {
+      setCustomersData(customers);
     }
+  });
 
-    
-    const handleDeleteRows = (event, rowData) => {
-      setSelectedRowData(rowData)
-      setShowDeleteCustomersDialog(true)
-    };
-
-    const cbForDeleteCustomers = () => {
-      // console.log(rowData)
-      // let _data = [...data];
-      // rowData.forEach(rd => {
-      //   _data = _data.filter(t => t.tableData.id !== rd.tableData.id);
-      // });
-      // setData(_data);
+  const handleAddCustomer = (customer, resolve) => {
+    console.log(customer);
+    console.log("triggering");
+    if (!customers) {
+      console.log("1st customer");
+      addCustomer(user.uid, customer, resolve);
+    } else {
+      console.log("next customers");
+      console.log(customers);
+      customers.push(customer);
+      addCustomer(user.uid, customers, resolve);
     }
-    const cbForCloseDeleteCustomersDialog = () => {
-      setShowDeleteCustomersDialog(false)
-    }
+  };
 
-    return (
-      <div className = {classes.table}>
-        { showDeleteCustomersDialog ? 
-            <DeleteCustomersDialog selectedRowData = {selectedRowData} cbForDeleteCustomers = {cbForDeleteCustomers} cbForCloseDeleteCustomersDialog = {cbForCloseDeleteCustomersDialog}/> 
-            : null}
+  const handleDeleteRows = (event, rowData) => {
+    setSelectedRowData(rowData);
+    setShowDeleteCustomersDialog(true);
+  };
+
+  const cbForDeleteCustomers = () => {
+    // console.log(rowData)
+    // let _data = [...data];
+    // rowData.forEach(rd => {
+    //   _data = _data.filter(t => t.tableData.id !== rd.tableData.id);
+    // });
+    // setData(_data);
+  };
+  const cbForCloseDeleteCustomersDialog = () => {
+    setShowDeleteCustomersDialog(false);
+  };
+
+  return (
+    <div className={classes.table}>
+      {showDeleteCustomersDialog ? (
+        <DeleteCustomersDialog
+          selectedRowData={selectedRowData}
+          cbForDeleteCustomers={cbForDeleteCustomers}
+          cbForCloseDeleteCustomersDialog={cbForCloseDeleteCustomersDialog}
+        />
+      ) : null}
       <MaterialTable
         title="Customers"
         columns={columns}
         data={customersData}
         editable={{
           onRowAdd: (newData) =>
-          new Promise((resolve) => {
-            handleAddCustomer(newData, resolve)
-          }),
+            new Promise((resolve) => {
+              handleAddCustomer(newData, resolve);
+            }),
           onRowUpdate: (newData, oldData) =>
             new Promise((resolve, reject) => {
               setTimeout(() => {
@@ -125,29 +244,29 @@ const CustomersTable = (props) => {
                 dataUpdate[index] = newData;
                 setData([...dataUpdate]);
                 resolve();
-              }, 1000)
+              }, 1000);
             }),
-          onRowDelete: oldData =>
+          onRowDelete: (oldData) =>
             new Promise((resolve, reject) => {
               setTimeout(() => {
                 const dataDelete = [...data];
                 const index = oldData.tableData.id;
                 dataDelete.splice(index, 1);
                 setData([...dataDelete]);
-                resolve()
-              }, 1000)
+                resolve();
+              }, 1000);
             }),
         }}
         options={{
           // pageSize:40,  --> Initial page size.
-          pageSizeOptions : [5, 10, 20, 30, 50, 100],
+          pageSizeOptions: [5, 10, 20, 30, 50, 100],
           maxBodyHeight: 470,
           selection: true,
-          rowStyle: (rowData, index, level ) => ({
-            backgroundColor: index % 2 === 0 ? "#EEE" : "white"
+          rowStyle: (rowData, index, level) => ({
+            backgroundColor: index % 2 === 0 ? "#EEE" : "white",
           }),
           actionsColumnIndex: -1,
-          headerStyle:{ backgroundColor:'#18de99', fontWeight: 'bold',},
+          headerStyle: { backgroundColor: "#18de99", fontWeight: "bold" },
           exportButton: true,
           // emptyRowsWhenPaging: false,
           exportAllData: true,
@@ -156,18 +275,17 @@ const CustomersTable = (props) => {
           {
             icon: () => <Delete />,
             tooltip: "Delete Rows",
-            onClick: handleDeleteRows
-          }
+            onClick: handleDeleteRows,
+          },
         ]}
       />
-      </div>
-    )
-  }
-  function mapStateToProps(state) {
-    return {
-      user : state.auth.user,
-      customers : state.customersReducer.customers
-
-    };
-  }
-export default connect(mapStateToProps)(CustomersTable)
+    </div>
+  );
+};
+function mapStateToProps(state) {
+  return {
+    user: state.auth.user,
+    customers: state.customersReducer.customers,
+  };
+}
+export default connect(mapStateToProps)(CustomersTable);
